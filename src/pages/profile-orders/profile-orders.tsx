@@ -1,6 +1,6 @@
 import { ProfileOrdersUI } from '@ui-pages';
 import { FC, useEffect } from 'react';
-import { ordersConnect, ordersDisconnect } from '@slices';
+import { fetchUserOrders, ordersConnect, ordersDisconnect } from '@slices';
 import { selectUserOrders } from '@selectors';
 import { useDispatch, useSelector } from '../../services/store';
 import { getCookie } from '../../utils/cookie';
@@ -11,6 +11,8 @@ export const ProfileOrders: FC = () => {
   const orders = useSelector(selectUserOrders);
 
   useEffect(() => {
+    dispatch(fetchUserOrders());
+
     const token = (getCookie('accessToken') || '').replace('Bearer ', '');
     dispatch(ordersConnect(`${ORDERS_WS_URL}?token=${token}`));
     return () => {
