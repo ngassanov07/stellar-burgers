@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { getOrdersApi } from '@api';
 import { TOrder } from '@utils-types';
 
 export type TOrdersMessage = {
@@ -18,6 +19,11 @@ const initialState: TOrdersState = {
   isConnected: false,
   error: null
 };
+
+export const fetchUserOrders = createAsyncThunk(
+  'orders/fetchAll',
+  getOrdersApi
+);
 
 const ordersSlice = createSlice({
   name: 'orders',
@@ -42,6 +48,16 @@ const ordersSlice = createSlice({
     ordersMessageReceived: (state, action: PayloadAction<TOrdersMessage>) => {
       state.orders = action.payload.orders;
     }
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchUserOrders.fulfilled, (state, action) => {
+        state.orders = action.payload;
+      })
+      .addCase(fetchUserOrders.rejected, (state, action) => {
+        state.error =
+          action.error.message || 'Не удалось загрузить историю заказов';
+      });
   }
 });
 

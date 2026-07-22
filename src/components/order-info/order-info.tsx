@@ -24,7 +24,7 @@ export const OrderInfo: FC = () => {
   const orderData =
     feedOrders.find((order) => order.number === Number(number)) ||
     userOrders.find((order) => order.number === Number(number)) ||
-    currentOrder;
+    (currentOrder?.number === Number(number) ? currentOrder : undefined);
 
   useEffect(() => {
     if (!orderData && number) {
